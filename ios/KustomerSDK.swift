@@ -47,12 +47,12 @@
   func describeCustomer(data: [AnyHashable : Any]) -> Void {
    var emails = [String]()
    let email = data["email"] as? String
-   if email?.count != 0 {
+   if data["email"] != nil && email?.count != 0 {
     emails.append(email!)
    }
    var phones = [String]()
    let phone = data["phone"] as? String
-   if phone?.count != 0 {
+   if data["phone"] != nil && phone?.count != 0 {
     phones.append(phone!)
    }
    var customs = [String : Any]()
