@@ -17,8 +17,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rebythecode/react-native-kustomer-sdk.git",
-    "baseUrl": "https://github.com/rebythecode/react-native-kustomer-sdk"
+    "url": "git+https://github.com/Jad-Jbara/react-native-kustomer-sdk.git",
+    "baseUrl": "https://github.com/Jad-Jbara/react-native-kustomer-sdk"
   },
   "keywords": [
     "react-native"
