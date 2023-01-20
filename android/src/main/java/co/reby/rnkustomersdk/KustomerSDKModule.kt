@@ -16,13 +16,17 @@ class KustomerSDKModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun identify(hash:String, promise: Promise) {
-        Kustomer.getInstance().logIn(hash){
+    fun identify(token:String, promise: Promise) {
+        Kustomer.getInstance().logIn(token) {
             when (it) {
-                is KusResult.Success -> promise.resolve(true)
-                is KusResult.Error -> it.exception.localizedMessage
+                is KusResult.Success -> {
+                    promise.resolve(it.data)
+                }
+                is KusResult.Error -> {
+                    promise.reject(it.exception.localizedMessage)
+                }
             }
-        }
+        }    
     }
 
     @ReactMethod
@@ -41,20 +45,31 @@ class KustomerSDKModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun describeCustomer(data: ReadableMap) {
-        val email = data.getString("email")
-        val phone = data.getString("phone")
-        val custom = data.getMap("custom")
-
+    fun describeCustomer(data: ReadableMap, promise: Promise)  {
+        var email: String = ""
+        var phone: String = ""
+        when (data.hasKey("email")) {
+            true -> email = data.getString("email")!!
+            false -> promise.reject("No email provided")
+        }
+        when (data.hasKey("phone") && data.getString("phone") != null) {
+            true -> phone = data.getString("phone")!!
+            false -> promise.reject("No phone number provided")
+        }
         val attributes = KusCustomerDescribeAttributes(
-                emails = listOf(KusEmail(email!!)),
-                phones = listOf(KusPhone(phone!!)),
-                custom = toMap(custom!!)
+            emails = listOf(KusEmail(email)),
+            phones = listOf(KusPhone(phone)),
+            custom = toMap(data.getMap("custom")!!)!!
         )
 
         runBlocking {
-            Kustomer.getInstance().describeCustomer(attributes)
+           val result =  Kustomer.getInstance().describeCustomer(attributes)
+            when (result) {
+                is KusResult.Success -> promise.resolve("Success")
+                is KusResult.Error -> promise.reject("error")
+            }
         }
+        promise.resolve(null)
     }
 
     private fun toMap(readableMap: ReadableMap): Map<String, String> {
