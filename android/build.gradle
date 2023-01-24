@@ -72,6 +72,7 @@ repositories {
 dependencies {
     implementation 'com.facebook.react:react-native:+'  // From node_modules
     implementation 'com.kustomer.chat:ui:2.10.5'
+    implementation 'com.google.firebase:firebase-messaging'
 }
 
 def configureReactNativePom(def pom) {
