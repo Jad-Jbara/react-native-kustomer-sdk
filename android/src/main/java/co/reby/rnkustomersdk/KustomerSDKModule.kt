@@ -67,9 +67,34 @@ class KustomerSDKModule(reactContext: ReactApplicationContext) :
             when (result) {
                 is KusResult.Success -> promise.resolve("Success")
                 is KusResult.Error -> promise.reject("error")
+                else -> promise.reject("error")
             }
         }
-        promise.resolve(null)
+    }
+
+    companion object {
+        fun registerDevice() {
+            runBlocking {
+                Kustomer.getInstance().registerDevice()
+            }
+        }
+    }
+
+    @ReactMethod
+    fun registerDeviceToken(token: String, promise: Promise) {
+        runBlocking {
+            val result = Kustomer.getInstance().registerDeviceToken(token)
+            when (result) {
+                is KusResult.Success -> {
+                    val result = result.data
+                    promise.resolve(result)    
+                } 
+                is KusResult.Error -> {
+                    val result  = result.exception.localizedMessage   
+                    promise.reject(result)
+                }
+            }
+        }
     }
 
     private fun toMap(readableMap: ReadableMap): Map<String, String> {
